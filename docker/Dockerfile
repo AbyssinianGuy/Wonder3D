@@ -32,14 +32,17 @@ ENV PATH="/workspace/miniconda3/bin:${PATH}"
 # initialize conda
 RUN conda init bash
 
+# accept conda Terms of Service for default channels
+RUN conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main && \
+    conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
+
 # create and activate conda environment
-RUN conda create -n wonder3d python=3.8 && echo "source activate wonder3d" > ~/.bashrc
+RUN conda create -y -n wonder3d python=3.8 && echo "source activate wonder3d" > ~/.bashrc
 ENV PATH /workspace/miniconda3/envs/wonder3d/bin:$PATH
 
 
-# clone the repository
-RUN git clone https://github.com/xxlong0/Wonder3D.git && \
-    cd /workspace/Wonder3D 
+# Copy local repository instead of cloning from GitHub
+COPY . /workspace/Wonder3D
 
 # change the working directory to the repository
 WORKDIR /workspace/Wonder3D
